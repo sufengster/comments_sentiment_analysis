@@ -19,16 +19,16 @@ columns = ['location_traffic_convenience',
        'others_overall_experience', 'others_willing_to_consume_again']
 
 
-training_file = '/Users/sufeng/AIChallenger/细粒度用户评论情感分析/training_data/ai_challenger_sentiment_analysis_trainingset_20180816/sentiment_analysis_trainingset.csv'
 validate_file = '/Users/sufeng/AIChallenger/细粒度用户评论情感分析/verify_data/ai_challenger_sentiment_analysis_validationset_20180816/sentiment_analysis_validationset.csv'
-test_a_file = '/Users/sufeng/AIChallenger/细粒度用户评论情感分析/test_data_a/ai_challenger_sentiment_analysis_testa_20180816/sentiment_analysis_testa.csv'
 
-df_train = pd.DataFrame(pd.read_csv(training_file, header=0))
-df_train.set_index('id')
+df_validate = pd.DataFrame(pd.read_csv(validate_file, header=0))
+df_validate.set_index('id')
 
-train_vecs = np.loadtxt('../data/model/train_vecs.txt', dtype=float, delimiter=',')
+print(df_validate.dtypes)
+
+validate_vecs = np.loadtxt('../data/model/validate_vecs.txt', dtype=float, delimiter=',')
 
 for column in columns:
-       print('training ' + column)
-       y_train = df_train[column]
-       trainClassifer(train_vecs, y_train, column)
+       y_validate = df_validate[column]
+       lr = joblib.load('../data/model/classifier_'+column+'.pkl')
+       print(column+ ' validate accuracy: %.2f' % lr.score(validate_vecs, y_validate))
