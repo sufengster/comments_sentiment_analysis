@@ -20,7 +20,7 @@ columns = ['location_traffic_convenience',
        'others_overall_experience', 'others_willing_to_consume_again']
 
 test_a_file = '../data/result/sentiment_analysis_testa.csv'
-test_a_file_result = '../data/result/sentiment_analysis_testa_result.csv'
+test_a_file_result = '../data/result/sentiment_analysis_testa_result.bak.csv'
 
 df_test = pd.DataFrame(pd.read_csv(test_a_file, header=0))
 df_test.set_index('id')

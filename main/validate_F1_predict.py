@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import threading
 
 from sklearn.linear_model import SGDClassifier
 from sklearn.cross_validation import train_test_split
@@ -11,8 +10,8 @@ from main.apply_df_by_multiprocessing import apply_by_multiprocessing
 from test.util import buildWordVector, trainClassifer
 import gensim
 import joblib
-import time
-from multiprocessing.dummy import Pool as ThreadPool
+from sklearn.metrics import f1_score
+import copy
 
 columns = ['location_traffic_convenience',
        'location_distance_from_business_district', 'location_easy_to_find',
@@ -23,44 +22,39 @@ columns = ['location_traffic_convenience',
        'dish_portion', 'dish_taste', 'dish_look', 'dish_recommendation',
        'others_overall_experience', 'others_willing_to_consume_again']
 
-test_a_file = '../data/result/sentiment_analysis_testa.csv'
-test_a_file_result = '../data/result/sentiment_analysis_testa_result.csv'
+# generate predict result file 'validate_result_file'
+validate_file = '../data/validate/sentiment_analysis_validationset.csv'
+validate_result_file = '../data/validate/sentiment_analysis_validationset_result.csv'
 
-df_test = pd.DataFrame(pd.read_csv(test_a_file, header=0))
-df_test.set_index('id')
-df_test = df_test.fillna(0)
+df_validate = pd.DataFrame(pd.read_csv(validate_file, header=0))
+df_validate.set_index('id')
 
-print(df_test.dtypes)
+df_validate_result = copy.deepcopy(df_validate)
+
+print(id(df_validate))
+print(id(df_validate_result))
 
 model = gensim.models.Word2Vec.load('../data/model/contents_word2vec.model')
 
 lrs = {}
 for column in columns:
     lrs[column] = joblib.load('../data/model/classifier_'+column+'.pkl')
-    # df_test[column] = df_test[column].astype(int)
-
-# for i in range(0, len(df_test)):
-#     print(i)
-#     vec = buildWordVector(df_test.iloc[i]['content'], 100, model)
-#     for column in columns:
-#         predict = lrs[column].predict(vec)
-#         df_test.iloc[i][column] = predict[0]
 
 def predict4row(row):
     index = row['id']
     print(index)
     vec = buildWordVector(row['content'], 100, model)
-    if index<10:
-        print(row['content'])
     for column in columns:
         predict = lrs[column].predict(vec)
-        df_test.loc[index, column] = predict[0]
-        if index<10:
-            print('len: %d %s %d' % (index,column,df_test.loc[index, column]))
+        df_validate_result.loc[index, column] = predict[0]
+       # print('len: %d %s %d' % (index,column,df_test.loc[index, column]))
 
-# print('value1: %s %d' % (df_test.loc[1,'price_discount'], id(df_test)))
-apply_by_multiprocessing(df_test, predict4row, axis=1, workers=8)
-# print('value2: %s %d' % (df_test.loc[1,'price_discount'], id(df_test)))
+apply_by_multiprocessing(df_validate_result, predict4row, axis=1, workers=8)
+
+df_validate_result.to_csv(validate_result_file, index=0,float_format='%.0f')
+
+for column in columns:
+       score = f1_score(df_validate[column], df_validate_result[column],average='macro')
+       print('%s f1 score: %f' % (column, score))
 
 
-df_test.to_csv(test_a_file_result, index=0,float_format='%.0f')

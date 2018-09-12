@@ -3,6 +3,16 @@
 import numpy as np
 import pandas as pd
 from IPython.display import display
+import matplotlib.pyplot as plt
+
+columns = ['location_traffic_convenience',
+       'location_distance_from_business_district', 'location_easy_to_find',
+       'service_wait_time', 'service_waiters_attitude',
+       'service_parking_convenience', 'service_serving_speed', 'price_level',
+       'price_cost_effective', 'price_discount', 'environment_decoration',
+       'environment_noise', 'environment_space', 'environment_cleaness',
+       'dish_portion', 'dish_taste', 'dish_look', 'dish_recommendation',
+       'others_overall_experience', 'others_willing_to_consume_again']
 
 training_file = '/Users/sufeng/AIChallenger/细粒度用户评论情感分析/training_data/ai_challenger_sentiment_analysis_trainingset_20180816/sentiment_analysis_trainingset.csv'
 validate_file = '/Users/sufeng/AIChallenger/细粒度用户评论情感分析/verify_data/ai_challenger_sentiment_analysis_validationset_20180816/sentiment_analysis_validationset.csv'
@@ -14,8 +24,13 @@ pd.set_option('display.max_rows', 500)
 
 df = pd.DataFrame(pd.read_csv(training_file,header=0))
 df.set_index('id')
-df.info()
-print(df.columns)
+# df.info()
+# print(df.columns)
+
+for column in columns:
+    df.groupby(column).id.count().plot.bar(ylim=0)
+    plt.show()
+
 
 # df.shape
 #
