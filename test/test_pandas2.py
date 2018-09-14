@@ -28,8 +28,14 @@ df.set_index('id')
 # print(df.columns)
 
 for column in columns:
-    df.groupby(column).id.count().plot.bar(ylim=0)
-    plt.show()
+    group = df.groupby(column).id.count()
+    # print(group)
+    print('  -2 : %d' % group[-2])
+    print('  -1 : %d' % group[-1])
+    print('  0 : %d' % group[0])
+    print('  1 : %d' % group[1])
+    # df.groupby(column).id.count().plot.bar(ylim=0)
+    # plt.show()
 
 
 # df.shape
