@@ -13,3 +13,5 @@ df.set_index('id')
 
 
 df['content'].to_csv(path+"trainset_contents_fenci.txt", index=0)
+
+# sed 's/"//g' trainset_contents_fenci.txt > trainset_contents_fenci2.txt

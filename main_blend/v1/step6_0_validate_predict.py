@@ -45,18 +45,19 @@ for column in columns:
 
 def predict4row(row):
     index = row['id']
-    vec = buildRowVector(row['content'], 100, 100, word2vec_model, doc2vec_model)
+    vec = buildRowVector(row['content'], 300, 100, word2vec_model, doc2vec_model)
     for column in columns:
         predict = lrs[column].predict(vec)
         predict_proba = lrs[column].predict_proba(vec)
-        print('===================')
-        print('proba: ', predict_proba[0])
-        print('predict: ', predict[0])
-        print('real: ', df_validate_result.loc[index, column])
+        # print('===================')
+        # print('proba: ', predict_proba[0])
+        # print('predict: ', predict[0])
+        # print('real: ', df_validate_result.loc[index, column])
+
         # print('   %d, %s, %d, %d' % (index, column, df_validate_result.loc[index, column], predict[0]))
         df_validate_result.loc[index, column] = int(predict[0])
 
-apply_by_multiprocessing(df_validate_result, predict4row, axis=1, workers=1)
+apply_by_multiprocessing(df_validate_result, predict4row, axis=1, workers=8)
 
 df_validate_result.to_csv(validate_result_file, index=0,float_format='%.0f')
 

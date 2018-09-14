@@ -25,9 +25,9 @@ it = LabeledLineSentence(df_train['content'], df_train['id'])
 
 print('build LabeledLineSentence done...')
 
-model = gensim.models.Doc2Vec(size=100, window=10, min_count=5, workers=11, alpha=0.025, min_alpha=0.025)
+model = gensim.models.Doc2Vec(size=100, window=5, min_count=2, workers=11, alpha=0.025, min_alpha=0.025)
 model.build_vocab(it)
-for epoch in range(2):
+for epoch in range(10):
     model.train(it, total_examples=df_train.size, epochs=model.epochs)
     model.alpha -= 0.002  # decrease the learning rate
     model.min_alpha = model.alpha  # fix the learning rate, no deca
