@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
+import string
+
 import joblib
 import nltk
 import jieba
+import os
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from nltk.stem.porter import PorterStemmer
@@ -50,9 +53,9 @@ columns = ['location_traffic_convenience',
 
 path = '/Users/sufeng/PycharmProjects/comments_sentiment_analysis/data/v1/train/'
 
-training_file = path+'sentiment_analysis_trainingset_fenci.csv'
-df = pd.DataFrame(pd.read_csv(training_file,header=0))
-df.set_index('id')
+# training_file = path+'sentiment_analysis_trainingset_fenci.csv'
+# df = pd.DataFrame(pd.read_csv(training_file,header=0))
+# df.set_index('id')
 
 # for column in columns:
 #     print('%s:'%column)
@@ -61,11 +64,31 @@ df.set_index('id')
 #     fdist = nltk.FreqDist(nltk.word_tokenize(''.join(filter_contents)))
 #     print('    ',fdist.most_common(500))
 
-filter = df.loc[df['service_parking_convenience'].isin([1])]
+# filter = df.loc[df['service_parking_convenience'].isin([1])]
 
-total = 0
-for content in filter['content']:
-    total += 1
-    if(total>20):
-        break
-    print('%d, %s' % (total, content))
+token_dict = {}
+
+
+def tokenize(text):
+    tokens = nltk.word_tokenize(text)
+    stems = []
+    for item in tokens:
+        stems.append(PorterStemmer().stem(item))
+    return stems
+
+f = open('/Users/sufeng/PycharmProjects/comments_sentiment_analysis/data/v1/train/trainset_contents_fenci.txt')
+line = f.readline()
+i = 0
+while line:
+    token_dict[i] = line.lower()
+
+tfidf = TfidfVectorizer(tokenizer=tokenize, stop_words='english')
+tfs = tfidf.fit_transform(token_dict.values())
+
+str = '推荐 老板 最近 做 新开业 活动'
+response = tfidf.transform([str])
+print(response)
+
+feature_names = tfidf.get_feature_names()
+for col in response.nonzero()[1]:
+    print(feature_names[col], ' - ', response[0, col])

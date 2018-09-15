@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+from sklearn import svm
 from sklearn.linear_model import SGDClassifier, LogisticRegression
 import numpy as np
 import pandas as pd
@@ -23,12 +23,15 @@ model_path = '/Users/sufeng/PycharmProjects/comments_sentiment_analysis/data/v1/
 
 df_train = pd.DataFrame(pd.read_csv(path+'sentiment_analysis_trainingset_fenci.csv', header=0))
 df_train.set_index('id')
-
+weight = {-2:0.01, -1:0.33, 0:0.33, 1:0.33}
 def trainClassifer(train_vecs, y_train, column_name):
     # lr = SGDClassifier(loss='log', penalty='l2')
     # https://blog.csdn.net/jark_/article/details/78342644
-    lr = LogisticRegression(C=1000.0, max_iter=20, random_state=0, class_weight='balanced', solver='sag', multi_class='multinomial', n_jobs=-1)
     # lr = LogisticRegression(C=1.0, random_state=0, class_weight='balanced', n_jobs=-1)
+    # lr = LogisticRegression(C=1000.0, max_iter=20, random_state=0, class_weight='balanced', solver='sag', multi_class='multinomial', n_jobs=-1)
+    lr = LogisticRegression(C=1.0, max_iter=20, random_state=0, class_weight='balanced', solver='sag', multi_class='multinomial', n_jobs=-1)
+
+    # lr = svm.SVC(class_weight='balanced')
 
     lr.fit(train_vecs, y_train)
     joblib.dump(lr, columns_model_path+column_name+'.pkl')
