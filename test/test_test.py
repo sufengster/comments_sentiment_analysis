@@ -5,6 +5,7 @@ import pandas as pd
 from gensim.models.doc2vec import TaggedDocument, Doc2Vec
 import numpy as np
 from sklearn.preprocessing import scale
+import re
 
 str = 'haha test hello'
 arr = str.split()
@@ -1492,9 +1493,34 @@ low; 不同于 北京烤鸭; 细细的 萝卜丝; ... 和鹅肠; 黑芝麻 热�
 坐车到; 端上来 看上去; 麦当劳 冰淇淋; 差不多 易拉罐; 火锅店 重庆火锅; 老牌子 小时候; 服务员 一男一女; 宽敞明亮 落地窗;
 落地窗 宽敞明亮; 菠萝油 厚多士'''
 
-terms = phrase.split(';')
-for p in terms:
-    print(''.join(p.split()))
+# str2 = """哎，想当年来佘山的时候，啥都没有，
+#
+# 三品香算镇上最大看起来最像样的饭店了。菜品多，有点太多，感觉啥都有，杂都不足以形容。随便点些，居然口味什么的都好还可以，价钱自然是便宜当震惊。元宝虾和椒盐九肚鱼都
+# 不错吃。不过近来几次么，味道明显没以前好了。冷餐里面一个凉拌海带丝还可以，酸酸甜甜的。镇上也有了些别的大点的饭店，所以不是每次必来了。对了，这家的生意一如既往的超级好，不定位基本吃不到。不过佘山这边的人吃晚饭很早的，所以稍微晚点去就很空了。"""
+#
+# print(re.sub('\n{2,}','\n',re.sub('[，.,，。!！~]', '\n', str2)))
+
+
+
+str3 = """ 也 很大 
+ 都 很 足 
+ 服务员 很 到位 
+ 要 什么 都 很快 
+ 想必 冬天 肯定 很 暖 
+ 此时 人气 不是 很旺 
+ 用料 很足 
+ 椰汁 很香 
+ 很 好 的 口感 
+ 她家 音乐 放 的 也 很 好听 好静 的 感觉 
+ 她家 餐具 也 很 特别 
+ 看着 很辣 
+ 这家 店 位置 不是 很 好找 """
+
+print(str3.split())
+
+# terms = phrase.split('; ')
+# for p in terms:
+#     print(''.join(p.split()))
 
 
 

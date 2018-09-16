@@ -2,6 +2,7 @@
 import joblib
 import nltk
 import jieba
+import nltk as nltk
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from nltk.stem.porter import PorterStemmer
@@ -49,23 +50,47 @@ columns = ['location_traffic_convenience',
        'others_overall_experience', 'others_willing_to_consume_again']
 
 path = '/Users/sufeng/PycharmProjects/comments_sentiment_analysis/data/v1/train/'
+ganqing_path = '/Users/sufeng/PycharmProjects/comments_sentiment_analysis/data/dict/qinggan/'
 
 training_file = path+'sentiment_analysis_trainingset_fenci.csv'
 df = pd.DataFrame(pd.read_csv(training_file,header=0))
 df.set_index('id')
+
+file = '/Users/sufeng/PycharmProjects/comments_sentiment_analysis/data/v1/train/trainset_contents_fenci.txt'
+populars = {}
+with open(file, 'r') as myfile:
+    data=myfile.read()
+    fdist = nltk.FreqDist(nltk.word_tokenize(data))
+    populars = { word[0].strip() for word in fdist.most_common(500)}
+    for w in populars:
+        print(w)
+
 
 # for column in columns:
 #     print('%s:'%column)
 #     filter = df.loc[df[column].isin([1,0,-1])]
 #     filter_contents = filter['content']
 #     fdist = nltk.FreqDist(nltk.word_tokenize(''.join(filter_contents)))
-#     print('    ',fdist.most_common(500))
+#     # print('    ',fdist.most_common(700))
+#     ganqing_file = open(ganqing_path + column + '.txt', 'w')
+#     for word in fdist.most_common(600):
+#         if(word[0] not in populars):
+#             ganqing_file.write('%s\n' % word[0])
 
-filter = df.loc[df['service_parking_convenience'].isin([1])]
+# file = '/Users/sufeng/PycharmProjects/comments_sentiment_analysis/data/v1/train/trainset_contents_fenci.txt'
+# with open(file, 'r') as myfile:
+#     data=myfile.read()
+#     fdist = nltk.FreqDist(nltk.word_tokenize(data))
+#     for word in fdist.most_common(20000):
+#         if len(word[0])<2:
+#             print('%s'%word[0])
 
-total = 0
-for content in filter['content']:
-    total += 1
-    if(total>20):
-        break
-    print('%d, %s' % (total, content))
+
+# filter = df.loc[df['service_parking_convenience'].isin([1])]
+#
+# total = 0
+# for content in filter['content']:
+#     total += 1
+#     if(total>20):
+#         break
+#     print('%d, %s' % (total, content))

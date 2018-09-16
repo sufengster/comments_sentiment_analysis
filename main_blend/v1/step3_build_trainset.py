@@ -13,10 +13,10 @@ df_train = pd.DataFrame(pd.read_csv(path+'sentiment_analysis_trainingset_fenci.c
 df_train.set_index('id')
 
 word2vec_model = gensim.models.Word2Vec.load(model_path+'contents_word2vec.model')
-doc2vec_model = gensim.models.Doc2Vec.load(model_path+'contents_doc2vec.model')
+# doc2vec_model = gensim.models.Doc2Vec.load(model_path+'contents_doc2vec.model')
 
 
-train_vecs = np.concatenate([buildRowVector(z, 300, 100, word2vec_model, doc2vec_model ) for z in df_train['content']])
+train_vecs = np.concatenate([buildRowVector(z, 100, word2vec_model ) for z in df_train['content']])
 # scale or not? 不能scale！！！
 # train_vecs = scale(train_vecs)
 np.savetxt(model_path+'train_vecs_noscale.txt', train_vecs, fmt='%f', delimiter=',')

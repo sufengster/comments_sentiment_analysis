@@ -6,6 +6,7 @@ from IPython.display import display
 import jieba
 
 from main_blend.v1.util import seg_sentence
+import re
 
 training_file = '/Users/sufeng/AIChallenger/细粒度用户评论情感分析/training_data/ai_challenger_sentiment_analysis_trainingset_20180816/sentiment_analysis_trainingset.csv'
 validate_file = '/Users/sufeng/AIChallenger/细粒度用户评论情感分析/verify_data/ai_challenger_sentiment_analysis_validationset_20180816/sentiment_analysis_validationset.csv'
@@ -20,7 +21,7 @@ def fenci(filename):
 
     for i in range(0, len(df)):
         content = df.loc[i,'content']
-        content_fenci = seg_sentence(content.replace('\n', ' '))
+        content_fenci = seg_sentence(re.sub('\n{2,}','\n',re.sub('[，.,，。!！~]', '\n', content)))
         df.loc[i,'content'] = content_fenci
 
     df.to_csv(path+filename+'_fenci.csv', index=0)
